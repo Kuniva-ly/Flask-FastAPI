@@ -1,8 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, Flask, request, jsonify
 from datetime import datetime
 import json
 
-app = Flask(__name__)
+bp = Blueprint('books', __name__)
 
 # Créez une API simple pour gérer une liste de livres en mémoire.
 
@@ -35,7 +35,7 @@ books_db = {
 next_book_id = 4
 
 
-@app.route('/books', methods=['GET'])
+@bp.route('/books', methods=['GET'])
 def get_books():
     return jsonify({
         "success": True,
@@ -43,7 +43,7 @@ def get_books():
         "data": list(books_db.values())
     }), 200
 
-@app.route('/books/<int:id>', methods=['GET'])
+@bp.route('/books/<int:id>', methods=['GET'])
 def get_book(id):
     if id not in books_db:
         return jsonify({
@@ -55,7 +55,7 @@ def get_book(id):
         "data": books_db[id]
     }), 200
 
-@app.route('/books', methods=['POST'])
+@bp.route('/books', methods=['POST'])
 def add_book():
     global next_book_id
     data = request.get_json()
@@ -79,8 +79,3 @@ def add_book():
         "data": new_book
     }), 201
 
-if __name__ == '__main__':
-    print("=" * 60)
-    print("Flask Exercise: Simple Book API")
-    print("=" * 60)
-    app.run(debug=True, port=5000)

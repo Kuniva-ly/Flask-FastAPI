@@ -1,11 +1,7 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 import datetime
 
-app = Flask(__name__)   
-
-@app.route('/')
-def home():
-    return "Welcome to Flask Exercise06!"
+bp = Blueprint('blog', __name__)
 
 posts = [
     {"id": 1, 
@@ -26,18 +22,18 @@ posts = [
 ]
 next_post_id = 4
 # Blog Simple (CRUD Complet)
-@app.route('/posts', methods=['GET'])
+@bp.route('/posts', methods=['GET'])
 def get_posts():
     return jsonify(posts)
 
-@app.route('/posts/<int:id>', methods=['GET'])
+@bp.route('/posts/<int:id>', methods=['GET'])
 def get_post(id):
     post = next((p for p in posts if p['id'] == id), None)
     if post is None:
         return jsonify({"error": "Post not found"}), 404
     return jsonify(post)
 
-@app.route('/posts', methods=['POST'])
+@bp.route('/posts', methods=['POST'])
 def create_post():
     global next_post_id
     data = request.get_json()
@@ -56,7 +52,7 @@ def create_post():
     next_post_id += 1
     return jsonify(new_post), 201
 
-@app.route('/posts/<int:id>', methods=['PUT'])
+@bp.route('/posts/<int:id>', methods=['PUT'])
 def update_post(id):
     post = next((p for p in posts if p['id'] == id), None)
     if post is None:
@@ -72,7 +68,7 @@ def update_post(id):
     post['updated_at'] = datetime.datetime.now().isoformat()
     
     return jsonify(post)
-@app.route('/posts/<int:id>', methods=['DELETE'])
+@bp.route('/posts/<int:id>', methods=['DELETE'])
 def delete_post(id):
     global posts
     post = next((p for p in posts if p['id'] == id), None)
@@ -81,9 +77,3 @@ def delete_post(id):
     
     posts = [p for p in posts if p['id'] != id]
     return jsonify({"message": "Post deleted successfully"}), 200
-
-if __name__ == '__main__':
-    print("=" * 60)
-    print("Flask Exercise: Blog API (CRUD)")
-    print("=" * 60)
-    app.run(debug=True, port=5000)

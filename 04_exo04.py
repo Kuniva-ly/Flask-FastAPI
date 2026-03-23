@@ -1,10 +1,7 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 
-app = Flask(__name__)
+bp = Blueprint('register', __name__)
 
-@app.route('/')
-def home():
-    return "Welcome to Flask Exercise04!"
 # Créez une route `/register` qui accepte un POST avec les champs:
 # - `username` (2-20 caractères)
 # - `email` (format valide)
@@ -12,7 +9,7 @@ def home():
 # - `age` (18-100)
 
 
-@app.route('/register', methods=['POST'])
+@bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
     username = data.get('username')
@@ -39,11 +36,7 @@ def register():
         "age": age
     }), 201
 
-if __name__ == '__main__':
-    print("=" * 60)
-    print("Flask Exercise: User Registration with Validation")
-    print("=" * 60)
-    app.run(debug=True, port=5000)
+
 
 
     

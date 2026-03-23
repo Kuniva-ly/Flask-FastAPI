@@ -1,13 +1,10 @@
-from flask import Flask, jsonify
+from flask import Blueprint, jsonify
 
+# 1. Créer le blueprint (nom, module)
+bp = Blueprint('hello', __name__)
 
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "Welcome to Flask Exercise!"
-
-@app.route('/hello/<language>', methods=['GET'])
+# 2. Utiliser @bp.route au lieu de @app.route
+@bp.route('/hello/<language>', methods=['GET'])
 def hello(language):
     greetings = {
         'english': 'Hello',
@@ -18,10 +15,4 @@ def hello(language):
         "message": f"{greeting}!",
         "language": language
     })
-
-if __name__ == '__main__':
-    print("=" * 60)
-    print("Flask Exercise: Hello World with Multiple Languages")
-    print("=" * 60)
-    app.run(debug=True, port=5000)
 
