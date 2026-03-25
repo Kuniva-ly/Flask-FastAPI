@@ -19,6 +19,8 @@ Thumbs.db
 .env
 config.json
 secrets.json
+.venv
+venv/
 
 # Ignore IDE and editor files
 .idea/

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional, List
 from datetime import datetime
@@ -11,6 +11,7 @@ app = FastAPI(
     description="API pour gérer les mots de passe avec validation",
     version="1.0.0"
 )
+router = APIRouter()
 # Créez un modèle `Password` avec validation:
 # - `password`: au moins 8 caractères, doit contenir minuscule, majuscule, chiffre, symbole
 # - `confirm_password`: doit égaler `password`
@@ -43,15 +44,14 @@ class Password(BaseModel):
             raise ValueError('Passwords do not match')
         return v
     
-@app.get("/", tags=["Root"])
+@router.get("/", tags=["Root"])
 def root():
     """Root endpoint"""
     return {"message": "FastAPI Custom Validation Demo"}
 
-@app.post("/validate-password", tags=["Password Validation"])
+@router.post("/validate-password", tags=["Password Validation"])
 def validate_password(password_data: Password):
     """Endpoint to validate password strength and confirmation"""
     return {"message": "Password is valid!"}
 
-if __name__ == "__main__":
-    uvicorn.run(app, port=8000)
+app.include_router(router)

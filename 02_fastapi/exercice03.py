@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, APIRouter
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from enum import Enum
@@ -10,7 +10,7 @@ app = FastAPI(
     description="API pour gérer des produits avec fournisseur imbriqué",
     version="1.0.0"
 )
-
+router = APIRouter()
 
 class Category(str, Enum):
     ELECTRONICS = "ELECTRONICS"
@@ -33,15 +33,14 @@ class Produit(BaseModel):
     supplier: Supplier
 
 
-@app.get("/", tags=["Root"])
+@router.get("/", tags=["Root"])
 def root():
     return {"message": "FastAPI Nested Models Demo"}
 
 
-@app.post("/products", tags=["Products"])
+@router.post("/products", tags=["Products"])
 def create_product(product: Produit):
     return {"message": "Produit créé avec succès", "product": product}
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, port=8000)
+app.include_router(router)
